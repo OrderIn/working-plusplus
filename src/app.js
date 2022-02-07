@@ -29,7 +29,6 @@ const HTTP_403 = 403,
  * @return {void}
  */
 const logRequest = (request) => {
-  console.log("DUMP body: ", request.body);
   console.log(
     request.ip +
       " " +
@@ -54,7 +53,6 @@ const logRequest = (request) => {
  *                       and a 'message' to return to the user; otherwise, if valid, returns true.
  */
 const validateToken = (suppliedToken, serverToken) => {
-  console.log("dump token: ", serverToken);
   // Sanity check for bad values on the server side - either empty, or still set to the default.
   if (
     !serverToken ||
