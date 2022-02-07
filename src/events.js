@@ -5,16 +5,16 @@
  * @see https://api.slack.com/events-api
  */
 
-'use strict';
+"use strict";
 
-const slack = require( './slack' ),
-      points = require( './points' ),
-      helpers = require( './helpers' ),
-      messages = require( './messages' ),
-      operations = require( './operations' ),
-      leaderboard = require( './leaderboard' );
+const slack = require("./slack"),
+  points = require("./points"),
+  helpers = require("./helpers"),
+  messages = require("./messages"),
+  operations = require("./operations"),
+  leaderboard = require("./leaderboard");
 
-const camelCase = require( 'lodash.camelcase' );
+const camelCase = require("lodash.camelcase");
 
 /**
  * Handles an attempt by a user to 'self plus' themselves, which includes both logging the attempt
@@ -25,10 +25,10 @@ const camelCase = require( 'lodash.camelcase' );
  *                         private channels - aka groups) that the message was sent from.
  * @return {Promise} A Promise to send a Slack message back to the requesting channel.
  */
-const handleSelfPlus = ( user, channel ) => {
-  console.log( user + ' tried to alter their own score.' );
-  const message = messages.getRandomMessage( operations.operations.SELF, user );
-  return slack.sendMessage( message, channel );
+const handleSelfPlus = (user, channel) => {
+  console.log(user + " tried to alter their own score.");
+  const message = messages.getRandomMessage(operations.operations.SELF, user);
+  return slack.sendMessage(message, channel);
 };
 
 /**
@@ -42,12 +42,12 @@ const handleSelfPlus = ( user, channel ) => {
  * @return {Promise} A Promise to send a Slack message back to the requesting channel after the
  *                   points have been updated.
  */
-const handlePlusMinus = async( item, operation, channel ) => {
-  const score = await points.updateScore( item, operation ),
-        operationName = operations.getOperationName( operation ),
-        message = messages.getRandomMessage( operationName, item, score );
+const handlePlusMinus = async (item, operation, channel) => {
+  const score = await points.updateScore(item, operation),
+    operationName = operations.getOperationName(operation),
+    message = messages.getRandomMessage(operationName, item, score);
 
-  return slack.sendMessage( message, channel );
+  return slack.sendMessage(message, channel);
 };
 
 /**
@@ -58,24 +58,20 @@ const handlePlusMinus = async( item, operation, channel ) => {
  *                         https://api.slack.com/events/app_mention for details.
  * @returns {Promise} A Promise to send the Slack message.
  */
-const sayThankyou = ( event ) => {
-
+const sayThankyou = (event) => {
   const thankyouMessages = [
-    'Don\'t mention it!',
-    'You\'re welcome.',
-    'Pleasure!',
-    'No thank YOU!',
-    (
-      '++ for taking the time to say thanks!\n...' +
-      'just kidding, I can\'t `++` you. But it\'s the thought that counts, right??'
-    )
+    "Don't mention it!",
+    "You're welcome.",
+    "Pleasure!",
+    "No thank YOU!",
+    "++ for taking the time to say thanks!\n..." +
+      "just kidding, I can't `++` you. But it's the thought that counts, right??",
   ];
 
-  const randomKey = Math.floor( Math.random() * thankyouMessages.length ),
-        message = '<@' + event.user + '> ' + thankyouMessages[ randomKey ];
+  const randomKey = Math.floor(Math.random() * thankyouMessages.length),
+    message = "<@" + event.user + "> " + thankyouMessages[randomKey];
 
-  return slack.sendMessage( message, event.channel );
-
+  return slack.sendMessage(message, event.channel);
 }; // SayThankyou.
 
 /**
@@ -86,28 +82,28 @@ const sayThankyou = ( event ) => {
  *                         https://api.slack.com/events/app_mention for details.
  * @returns {Promise} A Promise to send the Slack message.
  */
-const sendHelp = ( event ) => {
+const sendHelp = (event) => {
+  const botUserID = helpers.extractUserID(event.text);
 
-  const botUserID = helpers.extractUserID( event.text );
+  const message =
+    "Sure, here's what I can do:\n\n" +
+    "• `@Someone++`: Add points to a user or a thing\n" +
+    "• `@Someone--`: Subtract points from a user or a thing\n" +
+    "• `<@" +
+    botUserID +
+    "> leaderboard`: Display the leaderboard\n" +
+    "• `<@" +
+    botUserID +
+    "> help`: Display this message\n\n" +
+    "You'll need to invite me to a channel before I can recognise " +
+    "`++` and `--` commands in it.\n\n" +
+    "If you're a developer, you can teach me new things! " +
+    "See <https://github.com/tdmalone/working-plusplus|my GitHub repo> to get started.";
 
-  const message = (
-    'Sure, here\'s what I can do:\n\n' +
-    '• `@Someone++`: Add points to a user or a thing\n' +
-    '• `@Someone--`: Subtract points from a user or a thing\n' +
-    '• `<@' + botUserID + '> leaderboard`: Display the leaderboard\n' +
-    '• `<@' + botUserID + '> help`: Display this message\n\n' +
-    'You\'ll need to invite me to a channel before I can recognise ' +
-    '`++` and `--` commands in it.\n\n' +
-    'If you\'re a developer, you can teach me new things! ' +
-    'See <https://github.com/tdmalone/working-plusplus|my GitHub repo> to get started.'
-  );
-
-  return slack.sendMessage( message, event.channel );
-
+  return slack.sendMessage(message, event.channel);
 }; // SendHelp.
 
 const handlers = {
-
   /**
    * Handles standard incoming 'message' events sent from Slack.
    *
@@ -119,24 +115,22 @@ const handlers = {
    * @return {bool|Promise} Either `false` if the event cannot be handled, or a Promise to send a
    *                        Slack message back to the requesting channel.
    */
-  message: ( event ) => {
-
+  message: (event) => {
     // Extract the relevant data from the message text.
-    const { item, operation } = helpers.extractPlusMinusEventData( event.text );
+    const { item, operation } = helpers.extractPlusMinusEventData(event.text);
 
-    if ( ! item || ! operation ) {
+    if (!item || !operation) {
       return false;
     }
 
     // Bail if the user is trying to ++ themselves...
-    if ( item === event.user && '+' === operation ) {
-      handleSelfPlus( event.user, event.channel );
+    if (item === event.user && "+" === operation) {
+      handleSelfPlus(event.user, event.channel);
       return false;
     }
 
     // Otherwise, let's go!
-    return handlePlusMinus( item, operation, event.channel );
-
+    return handlePlusMinus(item, operation, event.channel);
   }, // Message event.
 
   /**
@@ -151,31 +145,28 @@ const handlers = {
    *                        to send a Slack message back to the requesting channel - which will be
    *                        handled by the command's own handler.
    */
-  appMention: ( event, request ) => {
-
+  appMention: (event, request) => {
     const appCommandHandlers = {
       leaderboard: leaderboard.handler,
       help: sendHelp,
       thx: sayThankyou,
       thanks: sayThankyou,
-      thankyou: sayThankyou
+      thankyou: sayThankyou,
     };
 
-    const validCommands = Object.keys( appCommandHandlers ),
-          appCommand = helpers.extractCommand( event.text, validCommands );
+    const validCommands = Object.keys(appCommandHandlers),
+      appCommand = helpers.extractCommand(event.text, validCommands);
 
-    if ( appCommand ) {
-      return appCommandHandlers[appCommand]( event, request );
+    if (appCommand) {
+      return appCommandHandlers[appCommand](event, request);
     }
 
-    const defaultMessage = (
-      'Sorry, I\'m not quite sure what you\'re asking me. I\'m not very smart - there\'s only a ' +
-      'few things I\'ve been trained to do. Send me `help` for more details.'
-    );
+    const defaultMessage =
+      "Sorry, I'm not quite sure what you're asking me. I'm not very smart - there's only a " +
+      "few things I've been trained to do. Send me `help` for more details.";
 
-    return slack.sendMessage( defaultMessage, event.channel );
-
-  } // AppMention event.
+    return slack.sendMessage(defaultMessage, event.channel);
+  }, // AppMention event.
 }; // Handlers.
 
 /**
@@ -189,11 +180,12 @@ const handlers = {
  * @return {bool|Promise} Either `false` if the event cannot be handled, or a Promise as returned
  *                        by the event's handler function.
  */
-const handleEvent = ( event, request ) => {
+const handleEvent = (event, request) => {
+  console.log("dump event: ", event);
 
   // If the event has no type, something has gone wrong.
-  if ( 'undefined' === typeof event.type ) {
-    console.warn( 'Event data missing' );
+  if ("undefined" === typeof event.type) {
+    console.warn("Event data missing");
     return false;
   }
 
@@ -202,26 +194,25 @@ const handleEvent = ( event, request ) => {
   //       allow us to react to messages sent by other bots. However, we'd have to be careful to
   //       filter appropriately, because otherwise we'll also react to messages from ourself.
   //       Because the 'help' output contains commands in it, that could look interesting!
-  if ( 'undefined' !== typeof event.subtype ) {
-    console.warn( 'Unsupported event subtype: ' + event.subtype );
+  if ("undefined" !== typeof event.subtype) {
+    console.warn("Unsupported event subtype: " + event.subtype);
     return false;
   }
 
   // If there's no text with the event, there's not a lot we can do.
-  if ( 'undefined' === typeof event.text || ! event.text.trim() ) {
-    console.warn( 'Event text missing' );
+  if ("undefined" === typeof event.text || !event.text.trim()) {
+    console.warn("Event text missing");
     return false;
   }
 
   // Providing we have a handler for the event, let's handle it!
-  const eventName = camelCase( event.type );
-  if ( handlers[ eventName ] instanceof Function ) {
-    return handlers[ eventName ] ( event, request );
+  const eventName = camelCase(event.type);
+  if (handlers[eventName] instanceof Function) {
+    return handlers[eventName](event, request);
   }
 
-  console.warn( 'Invalid event received: ' + event.type );
+  console.warn("Invalid event received: " + event.type);
   return false;
-
 }; // HandleEvent.
 
 module.exports = {
@@ -230,5 +221,5 @@ module.exports = {
   sayThankyou,
   sendHelp,
   handlers,
-  handleEvent
+  handleEvent,
 };

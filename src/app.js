@@ -29,7 +29,7 @@ const HTTP_403 = 403,
  * @return {void}
  */
 const logRequest = (request) => {
-  console.log("DUMP: ", request);
+  console.log("DUMP body: ", request.body);
   console.log(
     request.ip +
       " " +
