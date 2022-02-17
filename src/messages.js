@@ -73,7 +73,6 @@ messages[operations.SELF] = [
     set: [
       "Hahahahahahaha no.",
       "Not. Gonna. Happen.",
-      "You got more points. *NOT!*",
       "An error occurred. Could not add points to self. What a potato. 500 Status Code :oof:",
       "Good job. You're now on the exact same points as before. :trophy:",
       "Whatcha tryin' Willis?",
