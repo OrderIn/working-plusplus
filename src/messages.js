@@ -7,75 +7,81 @@
  * @author Julian Calaby <julian.calaby@gmail.com>
  */
 
-'use strict';
+"use strict";
 
-const helpers = require( './helpers' ),
-      operations = require( './operations' ).operations;
+const helpers = require("./helpers"),
+  operations = require("./operations").operations;
 
 const messages = {};
 
-messages[ operations.PLUS ] = [
+messages[operations.PLUS] = [
   {
     probability: 100,
     set: [
-      'Congrats!',
-      'Got it!',
-      'Bravo.',
-      'Oh well done.',
-      'Nice work!',
-      'Well done.',
-      'Exquisite.',
-      'Lovely.',
-      'Superb.',
-      'Classic!',
-      'Charming.',
-      'Noted.',
-      'Well, well!',
-      'Well played.',
-      'Sincerest congratulations.',
-      'Delicious.'
-    ]
+      "Congrats!",
+      "Lekker!",
+      "Got it!",
+      "Bravo.",
+      "Oh well done.",
+      "Nice work!",
+      "Well done.",
+      "Exquisite.",
+      "Lovely.",
+      "Superb.",
+      "Fatality!!",
+      "Classic!",
+      "Charming.",
+      "Noted.",
+      "Well, well!",
+      "Well played.",
+      "Sincerest congratulations.",
+      "Delicious.",
+      ":muscle:",
+      ":happytomato:",
+    ],
   },
   {
     probability: 1,
-    set: [ ':shifty:' ]
-  }
+    set: [":shifty:"],
+  },
 ];
 
-messages[ operations.MINUS ] = [
+messages[operations.MINUS] = [
   {
     probability: 100,
     set: [
-      'Oh RLY?',
-      'Oh, really?',
-      'Oh :slightly_frowning_face:.',
-      'I see.',
-      'Ouch.',
-      'Oh là là.',
-      'Oh.',
-      'Condolences.'
-    ]
+      "Oh RLY?",
+      "Oh, really?",
+      "Oh :slightly_frowning_face:.",
+      "I see.",
+      "Ouch.",
+      "Oh là là.",
+      "Oh.",
+      "Condolences.",
+      ":trynottocry:",
+    ],
   },
   {
     probability: 1,
-    set: [ ':shifty:' ]
-  }
+    set: [":shifty:"],
+  },
 ];
 
-messages[ operations.SELF ] = [
+messages[operations.SELF] = [
   {
     probability: 100,
     set: [
-      'Hahahahahahaha no.',
-      'Nope.',
-      'No. Just no.',
-      'Not cool!'
-    ]
+      "Hahahahahahaha no.",
+      "Not. Gonna. Happen.",
+      "*<item>* is now on <score> point<plural>. NOT!",
+      "Not cool!",
+      "Whatcha tryin' Willis?",
+    ],
   },
   {
     probability: 1,
-    set: [ ':shifty:' ]
-  }
+    set: [":shifty:"],
+  },
 ];
 
 /**
@@ -88,63 +94,66 @@ messages[ operations.SELF ] = [
  *
  * @returns {string} A random message from the chosen pool.
  */
-const getRandomMessage = ( operation, item, score = 0 ) => {
+const getRandomMessage = (operation, item, score = 0) => {
+  const messageSets = messages[operation];
+  let format = "";
 
-  const messageSets = messages[ operation ];
-  let format = '';
-
-  switch ( operation ) {
+  switch (operation) {
     case operations.MINUS:
     case operations.PLUS:
-      format = '<message> *<item>* is now on <score> point<plural>.';
+      format = "<message> *<item>* is now on <score> point<plural>.";
       break;
 
     case operations.SELF:
-      format = '<item> <message>';
+      format = "<item> <message>";
       break;
 
     default:
-      throw Error ( 'Invalid operation: ' + operation );
+      throw Error("Invalid operation: " + operation);
   }
 
   let totalProbability = 0;
-  for ( const set of messageSets ) {
+  for (const set of messageSets) {
     totalProbability += set.probability;
   }
 
   let chosenSet = null,
-      setRandom = Math.floor( Math.random() * totalProbability );
+    setRandom = Math.floor(Math.random() * totalProbability);
 
-  for ( const set of messageSets ) {
+  for (const set of messageSets) {
     setRandom -= set.probability;
 
-    if ( 0 > setRandom ) {
+    if (0 > setRandom) {
       chosenSet = set.set;
       break;
     }
   }
 
-  if ( null === chosenSet ) {
+  if (null === chosenSet) {
     throw Error(
-      'Could not find set for ' + operation + ' (ran out of sets with ' + setRandom + ' remaining)'
+      "Could not find set for " +
+        operation +
+        " (ran out of sets with " +
+        setRandom +
+        " remaining)"
     );
   }
 
-  const plural = helpers.isPlural( score ) ? 's' : '',
-        max = chosenSet.length - 1,
-        random = Math.floor( Math.random() * max ),
-        message = chosenSet[ random ];
+  const plural = helpers.isPlural(score) ? "s" : "",
+    max = chosenSet.length - 1,
+    random = Math.floor(Math.random() * max),
+    message = chosenSet[random];
 
-  const formattedMessage = format.replace( '<item>', helpers.maybeLinkItem( item ) )
-    .replace( '<score>', score )
-    .replace( '<plural>', plural )
-    .replace( '<message>', message );
+  const formattedMessage = format
+    .replace("<item>", helpers.maybeLinkItem(item))
+    .replace("<score>", score)
+    .replace("<plural>", plural)
+    .replace("<message>", message);
 
   return formattedMessage;
-
 }; // GetRandomMessage.
 
 module.exports = {
   messages,
-  getRandomMessage
+  getRandomMessage,
 };
