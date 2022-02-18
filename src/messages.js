@@ -20,7 +20,7 @@ messages[operations.PLUS] = [
     set: [
       "Congrats!",
       "Lekker!",
-      "Let's go!!! :raise:",
+      "Let's go!!! :raise_hands:",
       "Look at you!",
       "Get those points!",
       "Nice work!",
