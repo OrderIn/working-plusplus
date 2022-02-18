@@ -72,6 +72,7 @@ messages[operations.SELF] = [
     probability: 100,
     set: [
       "Hahahahahahaha no.",
+      "I can't give kudos now, my enemies are after me! #kudos-swindler",
       "Not. Gonna. Happen.",
       "An error occurred. Could not add points to self. What a potato. 500 Status Code :oof:",
       "Good job. You're now on the exact same points as before. :trophy:",
