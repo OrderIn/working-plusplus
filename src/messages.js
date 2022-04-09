@@ -28,7 +28,7 @@ messages[operations.PLUS] = [
       "Classic!",
       "Charming!",
       "Well, well!",
-      "Everything delivered.",
+      "One Order1n!",
       "Delivered to promise.",
       "Deliciously tasty!!",
       ":muscle:",
