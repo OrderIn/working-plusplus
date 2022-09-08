@@ -26,18 +26,24 @@ messages[operations.PLUS] = [
       "Nice work!",
       ":air_quotes: Well done! :air_quotes:",
       "Classic!",
-      "Charming!",
-      "Well, well!",
-      "One Order1n!",
-      "Delivered to promise.",
-      "Deliciously tasty!!",
-      ":muscle:",
-      ":happytomato:",
     ],
   },
   {
     probability: 1,
     set: [":shifty:"],
+  },
+  ,
+  {
+    probability: 50,
+    set: [
+      "Charming!",
+      "Well, well!",
+      "One Order1n!",
+      "Delivered to promise!",
+      "Get in!! :muscle:",
+      ":muscle:",
+      ":happytomato:",
+    ],
   },
 ];
 
